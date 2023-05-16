@@ -2,6 +2,15 @@ from flask import Flask, request
 import pandas as pd
 from joblib import load
 from flask_cors import CORS
+import numpy as np
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import SGDClassifier
+
+
 
 # load the trained model and vectorizer
 clf = load('model.joblib')
