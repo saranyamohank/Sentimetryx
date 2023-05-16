@@ -9,5 +9,5 @@ joblib==1.2.0
 pandas==2.0.0
 Flask-Cors==3.0.6
 nltk==3.6.3
-scikit-learn==1.0.1
+scikit-learn==1.0.2
 
