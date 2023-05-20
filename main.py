@@ -1,52 +1,49 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import pandas as pd
 from joblib import load
 from flask_cors import CORS
-import numpy as np
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import SGDClassifier
 
-
-
-# load the trained model and vectorizer
-clf = load('model.joblib')
-#vectorizer = TfidfVectorizer()
-vectorizer = load('vectorizer.joblib')
-
-# create the Flask app
 app = Flask(__name__)
-label_dict = ["Fake", "Not Fake"]
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# define the endpoint
-@app.route('/text', methods=['POST'])
-def predict():
-    text = request.form['text']
-    text_tfidf = vectorizer.transform([text])
-    # make a prediction using the trained classifier
-    prediction = clf.predict(text_tfidf)
-    # return the prediction as a JSON response
-    return {'prediction': label_dict[prediction[0]]}
+# Load the trained model and vectorizer
+try:
+    clf = load('model.joblib')
+    vectorizer = load('vectorizer.joblib')
+except Exception as e:
+    print("Error loading model or vectorizer:", str(e))
+    exit(1)
 
+@app.route('/text', methods=['POST'])
+def predict_text():
+    try:
+        text = request.json.get('text')
+        if text is None:
+            return jsonify({'error': 'No text provided'}), 400
+
+        text_tfidf = vectorizer.transform([text])
+        prediction = clf.predict(text_tfidf)
+        return jsonify({'text': text, 'prediction': str(prediction[0])})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/data', methods=['POST'])
 def predict_csv():
-    file = request.files['file']
-    df = pd.read_csv(file)
-    text_tfidf = vectorizer.transform(df['text'])
-    predictions = clf.predict(text_tfidf)
-    df['prediction'] = [label_dict[prediction] for prediction in predictions]
-    results = []
-    for index, row in df.iterrows():
-        results.append({
-            'text': row['text'],
-            'prediction': row['prediction']
-        })
-    return jsonify(results)
+    try:
+        file = request.files.get('file')
+        if file is None:
+            return jsonify({'error': 'No file provided'}), 400
+
+        df = pd.read_csv(file)
+        text_tfidf = vectorizer.transform(df['Text'])
+        predictions = clf.predict(text_tfidf)
+        df['prediction'] = predictions
+
+        return jsonify(df.to_dict(orient='records'))
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(debug=True)
