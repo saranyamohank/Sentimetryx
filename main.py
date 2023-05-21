@@ -23,7 +23,7 @@ def predict_text():
 
         text_tfidf = vectorizer.transform([text])
         prediction = clf.predict(text_tfidf)
-        label = "fake" if prediction[0] == 1 else "not fake"
+        label = "fake" if prediction[0] == 1 else "real"
         return jsonify({'text': text, 'prediction': label})
 
     except Exception as e:
@@ -39,7 +39,7 @@ def predict_csv():
         df = pd.read_csv(file)
         text_tfidf = vectorizer.transform(df['Text'])
         predictions = clf.predict(text_tfidf)
-        df['prediction'] = ['fake' if pred == 1 else 'not fake' for pred in predictions]
+        df['prediction'] = ['fake' if pred == 1 else 'real' for pred in predictions]
 
         return jsonify(df.to_dict(orient='records'))
 
