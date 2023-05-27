@@ -37,7 +37,7 @@ def predict_csv():
             return jsonify({'error': 'No file provided'}), 400
 
         df = pd.read_csv(file)
-        text_tfidf = vectorizer.transform(df['Text'])
+        text_tfidf = vectorizer.transform(df['text'])
         predictions = clf.predict(text_tfidf)
         df['prediction'] = ['fake' if pred == 1 else 'real' for pred in predictions]
 
