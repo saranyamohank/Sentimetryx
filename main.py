@@ -1,75 +1,50 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import pandas as pd
-import spacy
-from collections import Counter
-import os
-from io import BytesIO
+from joblib import load
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-@app.route('/', methods=['POST'])
-def process_file():
-    file = request.files['file']
-    print(file)
-    file_content = file.read()
-    data = pd.read_csv(BytesIO(file_content))
-    data.dropna(axis="columns", how="any", inplace=True)
-    data['Sentiment'] = data['Sentiment'].str.lower()
-    df = data.groupby('Sentiment')
-    datasets = {}
-    for groups, data in df:
-        datasets[groups] = data
+# Load the trained model and vectorizer
+try:
+    clf = load('model.joblib')
+    vectorizer = load('vectorizer.joblib')
+except Exception as e:
+    print("Error loading model or vectorizer:", str(e))
+    exit(1)
 
-    wordlist = []
-    with open('words.txt', 'r') as file:
-        for line in file:
-            line = line.strip().lower()
-            wordlist.append(line)
+@app.route('/text', methods=['POST'])
+def predict_text():
+    try:
+        text = request.json.get('text')
+        if text is None:
+            return jsonify({'error': 'No text provided'}), 400
 
-    neg = datasets['negative']
-    pos = datasets['positive']
+        text_tfidf = vectorizer.transform([text])
+        prediction = clf.predict(text_tfidf)
+        label = "fake" if prediction[0] == 1 else "real"
+        return jsonify({'text': text, 'prediction': label})
 
-    neglist = []
-    neg_text_list = []  # Store relevant input text for negative words
-    nlp = spacy.blank("en")
-    for sentence in neg['Text']:
-        doc = nlp(sentence)
-        lowercase_tokens = [token.text.lower() for token in doc]
-        for token in lowercase_tokens:
-            if token in wordlist:
-                neglist.append(token)
-                neg_text_list.append(sentence)  # Store relevant input text
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-    poslist = []
-    pos_text_list = []  # Store relevant input text for positive words
-    nlp = spacy.blank("en")
-    for sentence in pos['Text']:
-        doc = nlp(sentence)
-        lowercase_tokens = [token.text.lower() for token in doc]
-        for token in lowercase_tokens:
-            if token in wordlist:
-                poslist.append(token)
-                pos_text_list.append(sentence)  # Store relevant input text
+@app.route('/data', methods=['POST'])
+def predict_csv():
+    try:
+        file = request.files.get('file')
+        if file is None:
+            return jsonify({'error': 'No file provided'}), 400
 
-    neg_word_freq = Counter(neglist)
-    neglength = len(neg)
+        df = pd.read_csv(file)
+        text_tfidf = vectorizer.transform(df['Text'])
+        predictions = clf.predict(text_tfidf)
+        df['prediction'] = ['fake' if pred == 1 else 'real' for pred in predictions]
 
-    # Find the top 5 most frequent words
-    top_five = neg_word_freq.most_common(5)
+        return jsonify(df.to_dict(orient='records'))
 
-    # Build the result dictionary
-    result = {}
-    for word, freq in top_five:
-        percent_freq = (freq / neglength) * 100
-        result[word] = {
-            "percent_freq": f"{percent_freq:.2f}%",
-            "relevant_text": neg_text_list  # Include relevant input text
-        }
-
-    print(result)
-    return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5173, debug=True)
+    app.run(debug=True)
