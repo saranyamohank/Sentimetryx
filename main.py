@@ -24,7 +24,7 @@ def predict_text():
         text_tfidf = vectorizer.transform([text])
         prediction = clf.predict(text_tfidf)
         label = "fake" if prediction[0] == 1 else "real"
-        return jsonify({'text': text, 'prediction': label})
+        return jsonify({'Text': text, 'prediction': label})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
