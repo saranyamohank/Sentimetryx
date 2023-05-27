@@ -6,10 +6,8 @@ from collections import Counter
 import os
 from io import BytesIO
 
-
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}) 
-
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/', methods=['POST'])
 def process_file():
@@ -34,6 +32,7 @@ def process_file():
     pos = datasets['positive']
 
     neglist = []
+    neg_text_list = []  # Store relevant input text for negative words
     nlp = spacy.blank("en")
     for sentence in neg['Text']:
         doc = nlp(sentence)
@@ -41,8 +40,10 @@ def process_file():
         for token in lowercase_tokens:
             if token in wordlist:
                 neglist.append(token)
+                neg_text_list.append(sentence)  # Store relevant input text
 
     poslist = []
+    pos_text_list = []  # Store relevant input text for positive words
     nlp = spacy.blank("en")
     for sentence in pos['Text']:
         doc = nlp(sentence)
@@ -50,6 +51,7 @@ def process_file():
         for token in lowercase_tokens:
             if token in wordlist:
                 poslist.append(token)
+                pos_text_list.append(sentence)  # Store relevant input text
 
     neg_word_freq = Counter(neglist)
     neglength = len(neg)
@@ -61,7 +63,11 @@ def process_file():
     result = {}
     for word, freq in top_five:
         percent_freq = (freq / neglength) * 100
-        result[word] = f"{percent_freq:.2f}%"
+        result[word] = {
+            "percent_freq": f"{percent_freq:.2f}%",
+            "relevant_text": neg_text_list  # Include relevant input text
+        }
+
     print(result)
     return jsonify(result)
 
