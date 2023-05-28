@@ -10,7 +10,7 @@ def process_file():
     datasets = {}
     for groups, data in df:
         datasets[groups] = data
-
+    
     wordlist = []
     with open('words.txt', 'r') as file:
         for line in file:
