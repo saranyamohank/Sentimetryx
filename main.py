@@ -1,3 +1,14 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import pandas as pd
+import spacy
+from collections import Counter
+import os
+from io import BytesIO
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}}) 
+
 @app.route('/', methods=['POST'])
 def process_file():
     file = request.files['file']
@@ -10,7 +21,7 @@ def process_file():
     datasets = {}
     for groups, data in df:
         datasets[groups] = data
-    
+
     wordlist = []
     with open('words.txt', 'r') as file:
         for line in file:
@@ -55,3 +66,7 @@ def process_file():
 
     print(result)
     return jsonify(result)
+
+
+if __name__ == '__main__':
+    app.run(host='localhost', port=5173, debug=True)
