@@ -6,10 +6,8 @@ from collections import Counter
 import os
 from io import BytesIO
 
-
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}) 
-
 
 @app.route('/', methods=['POST'])
 def process_file():
@@ -57,11 +55,15 @@ def process_file():
     # Find the top 5 most frequent words
     top_five = neg_word_freq.most_common(5)
 
+    # Sort the result from highest to lowest frequency
+    sorted_result = sorted(top_five, key=lambda x: x[1], reverse=True)
+
     # Build the result dictionary
     result = {}
-    for word, freq in top_five:
+    for word, freq in sorted_result:
         percent_freq = (freq / neglength) * 100
         result[word] = f"{percent_freq:.2f}%"
+
     print(result)
     return jsonify(result)
 
