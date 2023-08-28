@@ -26,8 +26,7 @@
     "react-dom": "^18.2.0",
     "react-router": "^6.10.0",
     "react-router-dom": "^6.10.0",
-    "react-type-animation": "^3.0.1",
-    "react-wordcloud": "^1.2.7"
+    "react-type-animation": "^3.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
