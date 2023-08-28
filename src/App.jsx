@@ -12,12 +12,12 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="sentimetryx.netlify.app/sen" element={<SentimentAnalysis />} />
-        <Route path="sentimetryx.netlify.app/social" element={<SocialMedia />} />
-        <Route path="sentimetryx.netlify.app/cp" element={<ChurnPrediction />} />
-        <Route path="sentimetryx.netlify.app/fake" element={<FakeAnalysis />} />
-        <Route path="sentimetryx.netlify.app/dash" element={<Dashboard />} />
-        <Route path="sentimetryx.netlify.app/about" element={<About />} />
+        <Route path="/sen" element={<SentimentAnalysis />} />
+        <Route path="/social" element={<SocialMedia />} />
+        <Route path="/cp" element={<ChurnPrediction />} />
+        <Route path="/fake" element={<FakeAnalysis />} />
+        <Route path="/dash" element={<Dashboard />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </>
   )
