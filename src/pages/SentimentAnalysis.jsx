@@ -33,7 +33,7 @@ const SentimentAnalysis = () => {
     setIsLoading(true);
 
     axios
-      .post('http://127.0.0.1:4040/text_sentiment', { text })
+      .post('https://b753-49-43-250-67.ngrok.io/text_sentiment', { text })
       .then((response) => {
         console.log(response.data);
         setResult(
@@ -67,7 +67,7 @@ const SentimentAnalysis = () => {
 
     if (isAudio) {
       axios
-        .post('http://127.0.0.1:4040/audio_sentiment', formData, {
+        .post('https://b753-49-43-250-67.ngrok.io/audio_sentiment', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -91,7 +91,7 @@ const SentimentAnalysis = () => {
         });
     } else {
       axios
-        .post('http://127.0.0.1:4040/file_sentiment', formData, {
+        .post('https://b753-49-43-250-67.ngrok.io/file_sentiment', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
