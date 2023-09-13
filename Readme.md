@@ -78,17 +78,7 @@ API implementation using Flask: app.py
 Present in Backend folder.
 
 
-## Demo video:
+## Website Link:
 
-Please find below the links to access the demo videos for Sentimetryx, showcasing its functionality and features:
-
-### 3-minute demo video: 
-
-https://youtu.be/5omLQWjJSqo
-
-
-### 10-minute demo video: 
-
-https://youtu.be/eGZ38wzJEMA
-
-These videos provide a detailed demonstration of Sentimetryx website, highlighting its capabilities and giving you a better understanding of how it can benefit your business.
+Please find below the links to access the deployed site in Netlify.
+https://sentimetryx.netlify.app/
