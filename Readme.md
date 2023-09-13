@@ -70,13 +70,6 @@ API implementation using Flask: app.py
  The data folder contains files for training data and the testing data.
 
 
-## Model:
-
-
-#### Sentiment Analysis Model :
-
-Present in Backend folder.
-
 
 ## Website Link:
 
