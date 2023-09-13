@@ -45,4 +45,3 @@ Flask for efficient API handling and server-side logic.
 
 Please find below the links to access the deployed site in Netlify.
 https://sentimetryx.netlify.app/
-
