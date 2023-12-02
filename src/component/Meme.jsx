@@ -154,7 +154,7 @@ const Meme = () => {
                     acceptedFiles={['.png', '.jpg', 'jpeg']}
                   />
                   <h5 style={{ textAlign: "center", paddingTop: "30px", fontWeight: "400" }}>
-                    (For File Upload only png, jpeg, jpg format files are accepted)
+                     (For File Upload only png, jpeg, jpg format files are accepted and the image should contain atleast one Text)
                   </h5>
                   </Box>
                   <div id='tex' style={{ position: "absolute", top: "550px" }}>
