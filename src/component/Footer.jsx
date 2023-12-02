@@ -4,7 +4,6 @@ import '../assets/css/about.css'
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import Logo from '../assets/img/logo.png'
 
 const About = () => {
   return (
